@@ -118,7 +118,7 @@ $$Number of values = \frac{f_{PWM}}{f_{sine}} = \frac{19305Hz}{50Hz} = 386$$
 
 So the frequency of the output voltage can be controlled, among other things, by the number of values in the sine table. The AC output voltage itself is determined by the DC input voltage and the amplitude of the sine wave in the table. Since this oscillates fully from 0 to 255 here, the AC output voltage (RMS) is calculated as follows:
 
-$$U_{AC} = \frac{U_{DC}}{/sqrt{2}}$$
+$$U_{AC} = \frac{U_{DC}}{\sqrt{2}}$$
 
 Here's the final wave at the AC output terminal:
 
