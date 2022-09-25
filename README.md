@@ -1,7 +1,7 @@
 # USB PD Inverter
 The ATtiny212/412-based USB Power Delivery Inverter converts direct current from USB PD power supplies into sine wave alternating current with selectable voltage and adjustable frequency. For this purpose, the ATtiny's powerful Timer/Counter D (TCD) controls an H-Bridge with a subsequent low-pass filter.
 
-- Design Files (EasyEDA): https://oshwlab.com/wagiminator/
+- Design Files (EasyEDA): https://oshwlab.com/wagiminator/attiny412-usb-pd-inverter
 
 ![pic1.jpg](https://raw.githubusercontent.com/wagiminator/ATtiny412-USB-PD-Inverter/main/documentation/USB_PD_Inverter_pic1.jpg)
 
