@@ -44,15 +44,11 @@ other small machines. Two logic inputs control the H-bridge driver, which consis
 
 In this application, the H-bridge is used to switch the polarity of the input voltage with high frequency PWM and a variable duty cycle. A downstream low-pass L-C filter removes the original high-frequency PWM signal, leaving only the lower-frequency sine wave modulated via the duty cycle at the output. The cutoff frequency of the filter should be well between the PWM freqency (19kHz) and the sine wave frequency (50Hz or 60Hz). The cutoff frequency depending on the inductor (L1, L2) and capacitor (C4, C5) can be determined using the following formula:
 
-```math
-f_cutoff = \frac{1}{2\times\pi\times\sqrt{L \times C}} = \frac{1}{2\times\pi\times\sqrt{0.00022H \times 0.00022F}} = 723Hz
-```
+$$f_{cutoff} = \frac{1}{2\times\pi\times\sqrt{L \times C}} = \frac{1}{2\times\pi\times\sqrt{0.00022H \times 0.00022F}} = 723Hz$$
 
 The DRV8870 offers the possibility to set a current limit via a resistor (R2). The resistance value is calculated as follows:
 
-```math
-R2 = \frac{V_REF}{10 \times I_limit} = \frac{5V}{10 \times 2.5A} = 0.2Ω
-```
+$$R2 = \frac{V_{REF}}{10 \times I_{limit}} = \frac{5V}{10 \times 2.5A} = 0.2Ω$$
 
 ## ATtiny Microcontroller
 The ATtiny212 or ATtiny412 microcontroller generates the high-frequency PWM signal with the duty cycle modulated sine wave for the H-bridge.
@@ -61,7 +57,7 @@ The ATtiny212 or ATtiny412 microcontroller generates the high-frequency PWM sign
 
 # Software
 ## Creating the PWM Signal
-Two complementary logic signals with intermediate dead times (break-before-make times) are required to control the H-bridge. The dead times are necessary to prevent short circuits due to H-bridge switching delays. To generate this, the ATtiny's powerful Timer/Counter D (TCD) is used, which is also specialized in controlling H-bridges, among other things. The TCD is operated in Four Ramp Mode with a clock frequency of $f_TCD = 5MHz$.
+Two complementary logic signals with intermediate dead times (break-before-make times) are required to control the H-bridge. The dead times are necessary to prevent short circuits due to H-bridge switching delays. To generate this, the ATtiny's powerful Timer/Counter D (TCD) is used, which is also specialized in controlling H-bridges, among other things. The TCD is operated in Four Ramp Mode with a clock frequency of $f_{TCD} = 5MHz$.
 
 In Four Ramp mode, the TCD cycle follows this pattern:
 1. A TCD cycle begins with the TCD counter counting up from zero until it reaches the CMPASET value. Then it resets to zero and switches the WOA pin to HIGH.
@@ -110,27 +106,19 @@ ISR(TCD0_OVF_vect) {
 
 This results in a PWM signal with always the same length and the same dead times, but a variable duty cycle. The period of the TCD cycle and thus the length of the PWM signal is calculated as follows:
 
-```math
-T_cycle = \frac{(CMPASET + 1) + (CMPACLR + 1) + (CMPBSET + 1) + (CMPBCLR + 1)}{f_TCD}
-```
+$$T_{cycle} = \frac{(CMPASET + 1) + (CMPACLR + 1) + (CMPBSET + 1) + (CMPBCLR + 1)}{f_{TCD}}$$
 
 Since the amplitude of the sine table was chosen so that the values are between 0 and 255, CMPACLR and CMPBCLR are always complementary (CMPACLR + CMPBCLR = 255) and CMPASET = CMPBSET = 0, this results in a TCD period of 259 clock cycles or 51.8µs. The PWM frequency is calculated as follows:
 
-```math
-f_PWM = \frac{1}{T_cycle} = \frac{1}{0.0000518s} = 19305Hz
-```
+$$f_{PWM} = \frac{1}{T_{cycle}} = \frac{1}{0.0000518s} = 19305Hz$$
 
 The number of values in the sine table for a complete period determines the frequency of the sine wave. It is calculated as follows:
 
-```math
-Number of values = \frac{f_PWM}{f_sine} = \frac{19305Hz}{50Hz} = 386
-```
+$$Number of values = \frac{f_{PWM}}{f_{sine}} = \frac{19305Hz}{50Hz} = 386$$
 
 So the frequency of the output voltage can be controlled, among other things, by the number of values in the sine table. The AC output voltage itself is determined by the DC input voltage and the amplitude of the sine wave in the table. Since this oscillates fully from 0 to 255 here, the AC output voltage (RMS) is calculated as follows:
 
-```math
-U_AC = \frac{U_DC}{/sqrt{2}}
-```
+$$U_{AC} = \frac{U_{DC}}{/sqrt{2}}$$
 
 Here's the final wave at the AC output terminal:
 
